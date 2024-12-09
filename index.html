@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Русская Рулетка</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Дуэль с ИИ: Русская Рулетка</h1>
+      <p>Испытай свою удачу и тактику!</p>
+    </header>
+    
+    <main>
+      <div id="game-board">
+        <div id="player-stats">
+          <h2>Игрок</h2>
+          <p>Жизни: <span id="player-lives">3</span></p>
+          <p>Инвентарь: <span id="player-inventory">0</span> / 4</p>
+        </div>
+        <div id="ai-stats">
+          <h2>ИИ</h2>
+          <p>Жизни: <span id="ai-lives">3</span></p>
+        </div>
+      </div>
+
+      <div id="duel-area">
+        <p id="message">Нажмите "Играть", чтобы начать дуэль.</p>
+        <button id="play-round">Играть раунд</button>
+      </div>
+
+      <div id="bonus-area">
+        <h3>Полученные бонусы</h3>
+        <ul id="bonus-list"></ul>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
