@@ -1,10 +1,12 @@
 let playerLives = 3;
 let aiLives = 3;
 let playerInventory = [];
+let roundCount = 0;
 
 const maxInventorySize = 4;
 const messages = document.getElementById('message');
-const playRoundButton = document.getElementById('play-round');
+const shootAIButton = document.createElement('button');
+const shootSelfButton = document.createElement('button');
 const playerLivesSpan = document.getElementById('player-lives');
 const aiLivesSpan = document.getElementById('ai-lives');
 const playerInventorySpan = document.getElementById('player-inventory');
@@ -18,6 +20,14 @@ const bonuses = [
   "Увеличить инвентарь",
 ];
 
+// Настройка кнопок
+shootAIButton.textContent = "Выстрелить в ИИ";
+shootSelfButton.textContent = "Выстрелить в себя";
+shootAIButton.classList.add('action-button');
+shootSelfButton.classList.add('action-button');
+document.getElementById('duel-area').appendChild(shootAIButton);
+document.getElementById('duel-area').appendChild(shootSelfButton);
+
 // Обновление интерфейса
 function updateUI() {
   playerLivesSpan.textContent = playerLives;
@@ -25,41 +35,73 @@ function updateUI() {
   playerInventorySpan.textContent = playerInventory.length;
 }
 
-// Игровая логика
-function playRound() {
+// Проверка окончания игры
+function checkGameOver() {
   if (playerLives <= 0 || aiLives <= 0) {
     messages.textContent = playerLives <= 0 ? "Вы проиграли!" : "Вы победили!";
-    playRoundButton.disabled = true;
-    return;
+    shootAIButton.disabled = true;
+    shootSelfButton.disabled = true;
+    return true;
   }
+  return false;
+}
 
-  const playerShot = Math.random() > 0.5;
-  const aiShot = Math.random() > 0.5;
-
-  if (playerShot) aiLives--;
-  if (aiShot) playerLives--;
-
-  // Получение бонуса
-  if (aiLives > 0 && playerLives > 0) {
+// Получение бонуса
+function grantBonus() {
+  if (roundCount % 3 === 0 && roundCount > 0) {
     const bonus = bonuses[Math.floor(Math.random() * bonuses.length)];
     if (playerInventory.length < maxInventorySize) {
       playerInventory.push(bonus);
       const listItem = document.createElement('li');
       listItem.textContent = bonus;
       bonusList.appendChild(listItem);
+      messages.textContent = `Вы получили бонус: ${bonus}`;
     } else {
       messages.textContent = "Инвентарь полон! Используйте предмет.";
     }
   }
-
-  // Обновление UI
-  updateUI();
-  if (playerLives <= 0 || aiLives <= 0) {
-    messages.textContent = playerLives <= 0 ? "Вы проиграли!" : "Вы победили!";
-    playRoundButton.disabled = true;
-  }
 }
 
-// Событие
-playRoundButton.addEventListener('click', playRound);
+// Действие: выстрелить в ИИ
+function shootAtAI() {
+  if (checkGameOver()) return;
+
+  const bullet = Math.random() > 0.5;
+  roundCount++;
+
+  if (bullet) {
+    aiLives--;
+    messages.textContent = "Вы попали в ИИ!";
+  } else {
+    messages.textContent = "Патрон оказался пустым!";
+  }
+
+  grantBonus();
+  updateUI();
+  checkGameOver();
+}
+
+// Действие: выстрелить в себя
+function shootAtSelf() {
+  if (checkGameOver()) return;
+
+  const bullet = Math.random() > 0.5;
+  roundCount++;
+
+  if (bullet) {
+    playerLives--;
+    messages.textContent = "Выстрел оказался смертельным!";
+  } else {
+    messages.textContent = "Патрон пустой! Ваш ход продолжается.";
+    return; // Игрок продолжает ход, если патрон пустой
+  }
+
+  grantBonus();
+  updateUI();
+  checkGameOver();
+}
+
+// Обработчики событий
+shootAIButton.addEventListener('click', shootAtAI);
+shootSelfButton.addEventListener('click', shootAtSelf);
 updateUI();
