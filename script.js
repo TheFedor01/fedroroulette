@@ -22,12 +22,17 @@ function startGacha() {
   // Скрыть меню
   menu.classList.add("hidden");
 
-  // Включить анимацию
+  // Показать гача-анимацию
   gachaAnimation.classList.remove("hidden");
 
-  // Остановить меню-музыку, если играет
+  // Остановить музыку из меню
   menuMusic.pause();
   menuMusic.currentTime = 0;
+
+  // Получить музыку для гача
+  const { audio } = rollItem();
+  gachaMusic.src = audio;
+  gachaMusic.play();
 
   // Анимация экранов
   const screens = document.querySelectorAll(".screen");
@@ -48,12 +53,8 @@ function revealItem() {
   itemDisplay.classList.remove("hidden");
 
   // Получаем предмет
-  const { img, audio } = rollItem();
+  const { img } = rollItem();
   itemImage.src = img;
-
-  // Устанавливаем и запускаем музыку
-  gachaMusic.src = audio;
-  gachaMusic.play();
 }
 
 function rollItem() {
@@ -74,15 +75,15 @@ function randomItem(array) {
 }
 
 function backToMenu() {
-  // Скрываем анимацию и показываем меню
+  // Скрыть гача-анимацию и вернуть меню
   itemDisplay.classList.add("hidden");
   gachaAnimation.classList.add("hidden");
   menu.classList.remove("hidden");
 
-  // Останавливаем музыку гачи
+  // Остановить гача-музыку
   gachaMusic.pause();
   gachaMusic.currentTime = 0;
 
-  // Возобновляем музыку меню
+  // Включить музыку меню
   menuMusic.play();
 }
