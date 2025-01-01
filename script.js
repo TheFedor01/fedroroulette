@@ -102,6 +102,14 @@ function revealItems() {
   });
 }
 
+function revealItem() {
+  itemDisplay.classList.remove("hidden");
+
+  // Получаем предмет
+  const { img } = rollItem();
+  itemImage.src = img;
+}
+
 function rollItem() {
   counter++;
   let random = Math.random() * 100;
