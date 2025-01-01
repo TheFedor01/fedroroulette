@@ -24,10 +24,10 @@ function startGacha() {
   // Скрыть меню
   menu.classList.add("hidden");
 
-  // Показать гача-анимацию
+  // Показать экран гачи
   gachaAnimation.classList.remove("hidden");
 
-  // Остановить музыку из меню
+  // Остановить музыку меню
   menuMusic.pause();
   menuMusic.currentTime = 0;
 
