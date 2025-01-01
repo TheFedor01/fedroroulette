@@ -7,21 +7,25 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="menu">
-    <h1>🔥 Gacha Menu 🔥</h1>
-    <button id="roll-btn">Крутить Гачу</button>
-    <audio id="menu-music" loop>
+  <!-- Меню -->
+  <div id="menu" class="menu">
+    <h1 class="title">🔥 Gacha Menu 🔥</h1>
+    <button id="roll-btn" class="btn">Крутить Гачу</button>
+    <audio id="menu-music" loop autoplay>
       <source src="assets/menu.mp3" type="audio/mpeg">
     </audio>
   </div>
 
-  <div id="gacha-animation" class="hidden">
-    <div class="screen"></div>
-    <div class="screen"></div>
-    <div class="screen"></div>
+  <!-- Анимация и результат -->
+  <div id="gacha-animation" class="gacha hidden">
+    <div class="screen-container">
+      <div class="screen"></div>
+      <div class="screen"></div>
+      <div class="screen"></div>
+    </div>
     <div class="item-display hidden">
-      <img id="item-image" src="" alt="Item">
-      <button id="back-btn">Назад</button>
+      <img id="item-image" src="" alt="Item" class="item-image">
+      <button id="back-btn" class="btn">Назад</button>
     </div>
     <audio id="gacha-music">
       <source src="" type="audio/mpeg">
