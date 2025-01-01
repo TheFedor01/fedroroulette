@@ -1,17 +1,24 @@
-/* Основной стиль страницы */
+/* Базовые стили */
 body {
   margin: 0;
   padding: 0;
   font-family: 'Arial', sans-serif;
-  color: #fff;
   background: #000;
+  color: #fff;
   text-align: center;
   overflow: hidden;
 }
 
+/* Стили для заголовков */
 h1 {
   font-size: 3rem;
+  color: #ff4500;
   margin-bottom: 20px;
+}
+
+/* Скрытие элементов */
+.hidden {
+  display: none;
 }
 
 /* Меню */
@@ -21,7 +28,7 @@ h1 {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: #111;
+  background: linear-gradient(180deg, #111, #333);
 }
 
 .title {
@@ -30,18 +37,19 @@ h1 {
 
 /* Кнопки */
 .btn {
-  padding: 10px 20px;
-  background-color: #ff3300;
+  padding: 15px 30px;
+  background: #ff4500;
   color: #fff;
-  border: none;
-  border-radius: 5px;
   font-size: 1.5rem;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .btn:hover {
-  background-color: #ff5500;
+  background: #ff6500;
+  transform: scale(1.05);
 }
 
 /* Гача-анимация */
@@ -51,52 +59,52 @@ h1 {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: #111;
+  background: radial-gradient(circle, #222, #000);
 }
 
 .screen-container {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  gap: 15px;
+  margin-top: 50px;
 }
 
 .screen {
-  width: 150px;
-  height: 150px;
-  background: #333;
-  animation: flicker 0.2s infinite alternate;
+  width: 120px;
+  height: 120px;
+  background: #444;
+  border-radius: 8px;
+  animation: flicker 0.3s infinite alternate;
+  transition: background-color 0.3s;
 }
 
-/* Результат */
+/* Предмет */
 .item-display {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .item-image {
   width: 200px;
   height: auto;
-}
-
-/* Скрытие элементов */
-.hidden {
-  display: none;
+  border: 5px solid #fff;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
 
 /* Анимации */
-@keyframes flicker {
+@keyframes fadeIn {
   0% {
-    background: #333;
+    opacity: 0;
   }
   100% {
-    background: #ff4500;
+    opacity: 1;
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+@keyframes flicker {
+  0% {
+    background: #444;
   }
-  to {
-    opacity: 1;
+  100% {
+    background: #666;
   }
 }
