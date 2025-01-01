@@ -12,6 +12,8 @@ const gachaMusic = document.getElementById("gacha-music");
 const rollBtn = document.getElementById("roll-btn");
 const backBtn = document.getElementById("back-btn");
 
+const screens = document.querySelectorAll(".screen");
+
 let counter = 0; // Счётчик круток для гарантии
 
 // Привязываем события
@@ -29,31 +31,32 @@ function startGacha() {
   menuMusic.pause();
   menuMusic.currentTime = 0;
 
-  // Получить музыку для гача
-  const { audio } = rollItem();
+  // Получить результат гачи
+  const { img, audio, color } = rollItem();
+
+  // Установить музыку
   gachaMusic.src = audio;
   gachaMusic.play();
 
-  // Анимация экранов
-  const screens = document.querySelectorAll(".screen");
+  // Анимация экранов с изменением цвета
   gsap.fromTo(
     screens,
-    { opacity: 0 },
+    { backgroundColor: "#333", opacity: 0 },
     {
+      backgroundColor: color, // Цвет определяется на основе ранга
       opacity: 1,
       duration: 0.5,
       stagger: 0.5,
-      repeat: 6, // Длительность ~3 секунд
-      onComplete: revealItem,
+      repeat: 6,
+      onComplete: () => revealItem(img),
     }
   );
 }
 
-function revealItem() {
+function revealItem(img) {
   itemDisplay.classList.remove("hidden");
 
-  // Получаем предмет
-  const { img } = rollItem();
+  // Показать предмет
   itemImage.src = img;
 }
 
@@ -62,11 +65,11 @@ function rollItem() {
   let random = Math.random() * 100;
 
   if (counter % 90 === 0) {
-    return { img: randomItem(S_ITEMS), audio: "assets/gachaS.mp3" };
+    return { img: randomItem(S_ITEMS), audio: "assets/gachaS.mp3", color: "#FFD700" }; // Желтый
   } else if (counter % 10 === 0 || random <= 1.2) {
-    return { img: randomItem(A_ITEMS), audio: "assets/gacha.mp3" };
+    return { img: randomItem(A_ITEMS), audio: "assets/gacha.mp3", color: "#8A2BE2" }; // Фиолетовый
   } else {
-    return { img: randomItem(B_ITEMS), audio: "assets/gacha.mp3" };
+    return { img: randomItem(B_ITEMS), audio: "assets/gacha.mp3", color: "#1E90FF" }; // Синий
   }
 }
 
