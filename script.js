@@ -1,66 +1,78 @@
-// Constants
-const items = {
-  B: ["Assets/BItem1.png", "Assets/BItem2.png", "Assets/BItem3.png", "Assets/BItem4.png", "Assets/BItem5.png"],
-  A: ["Assets/AItem1.png", "Assets/AItem2.png", "Assets/AItem3.png", "Assets/AItem4.png", "Assets/AItem5.png"],
-  S: ["Assets/SItem1.png", "Assets/SItem1.png", "Assets/SItem1.png"]
-};
+let aGuarantee = 10;
+let sGuarantee = 90;
 
-let pulls = 0;
-let guaranteeA = 10;
-let guaranteeS = 90;
+const bItems = ["assets/BItem1.png", "assets/BItem2.png", "assets/BItem3.png", "assets/BItem4.png", "assets/BItem5.png"];
+const aItems = ["assets/AItem1.png", "assets/AItem2.png", "assets/AItem3.png", "assets/AItem4.png", "assets/AItem5.png"];
+const sItems = ["assets/SItem1.png", "assets/SItem1.png", "assets/SItem1.png"];
 
-// Elements
-const menu = document.getElementById("menu");
-const gachaScreen = document.getElementById("gachaScreen");
-const resultScreen = document.getElementById("result");
-const resultImage = document.getElementById("resultImage");
-const aCounter = document.getElementById("aCounter");
-const sCounter = document.getElementById("sCounter");
-const menuMusic = document.getElementById("menuMusic");
-const gachaSound = document.getElementById("gachaSound");
-const gachaSSound = document.getElementById("gachaSSound");
+const menuMusic = document.getElementById('menuMusic');
+const rollOnceBtn = document.getElementById('rollOnce');
+const rollTenBtn = document.getElementById('rollTen');
+const backToMenuBtn = document.getElementById('backToMenu');
 
-// Functions
-function randomizePull() {
-  pulls++;
-  guaranteeA--;
-  guaranteeS--;
+const rollScreen = document.getElementById('rollScreen');
+const result = document.getElementById('result');
+const resultImage = document.getElementById('resultImage');
 
-  if (guaranteeS === 0) {
-    return "S";
-  } else if (guaranteeA === 0) {
-    return "A";
-  }
+const aGuaranteeSpan = document.getElementById('aGuarantee');
+const sGuaranteeSpan = document.getElementById('sGuarantee');
 
-  const chance = Math.random() * 100;
-  if (chance <= 0.2) return "S";
-  if (chance <= 1.4) return "A";
-  return "B";
+function rollItem() {
+    let roll = Math.random() * 100;
+    if (sGuarantee === 1 || roll <= 0.2) {
+        sGuarantee = 90;
+        aGuarantee--;
+        return { rank: 'S', item: getRandom(sItems), music: "assets/gachaS.mp3" };
+    } else if (aGuarantee === 1 || roll <= 1.4) {
+        sGuarantee--;
+        aGuarantee = 10;
+        return { rank: 'A', item: getRandom(aItems), music: "assets/gacha.mp3" };
+    } else {
+        sGuarantee--;
+        aGuarantee--;
+        return { rank: 'B', item: getRandom(bItems), music: "assets/gacha.mp3" };
+    }
 }
 
-function pullOnce() {
-  const rank = randomizePull();
-  playAnimation(rank);
+function getRandom(array) {
+    return array[Math.floor(Math.random() * array.length)];
 }
 
-function playAnimation(rank) {
-  menu.classList.add("hidden");
-  gachaScreen.classList.remove("hidden");
-  const audio = rank === "S" ? gachaSSound : gachaSound;
-  audio.play();
-
-  setTimeout(() => {
-    resultScreen.classList.remove("hidden");
-    resultImage.src = items[rank][Math.floor(Math.random() * items[rank].length)];
-    aCounter.textContent = guaranteeA;
-    sCounter.textContent = guaranteeS;
-  }, 7000);
+function updateGuarantees() {
+    aGuaranteeSpan.textContent = aGuarantee;
+    sGuaranteeSpan.textContent = sGuarantee;
 }
 
-// Event Listeners
-document.getElementById("singlePull").addEventListener("click", pullOnce);
-document.getElementById("backToMenu").addEventListener("click", () => {
-  resultScreen.classList.add("hidden");
-  gachaScreen.classList.add("hidden");
-  menu.classList.remove("hidden");
+function showRollScreen(itemData) {
+    menuMusic.pause();
+    rollScreen.classList.remove('hidden');
+
+    setTimeout(() => {
+        resultImage.src = itemData.item;
+        result.classList.remove('hidden');
+        const audio = new Audio(itemData.music);
+        audio.play();
+    }, 7000);
+}
+
+function resetToMenu() {
+    result.classList.add('hidden');
+    rollScreen.classList.add('hidden');
+    menuMusic.play();
+}
+
+rollOnceBtn.addEventListener('click', () => {
+    const item = rollItem();
+    updateGuarantees();
+    showRollScreen(item);
 });
+
+rollTenBtn.addEventListener('click', () => {
+    for (let i = 0; i < 10; i++) rollItem();
+    updateGuarantees();
+    showRollScreen({ rank: 'Multiple', item: bItems[0], music: "assets/gacha.mp3" }); // Placeholder
+});
+
+backToMenuBtn.addEventListener('click', resetToMenu);
+
+updateGuarantees();
