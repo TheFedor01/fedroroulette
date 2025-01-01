@@ -1,107 +1,55 @@
-let playerLives = 3;
-let aiLives = 3;
-let playerInventory = [];
-let roundCount = 0;
+const B_ITEMS = ["assets/BItem1.png", "assets/BItem2.png", "assets/BItem3.png", "assets/BItem4.png", "assets/BItem5.png"];
+const A_ITEMS = ["assets/AItem1.png", "assets/AItem2.png", "assets/AItem3.png", "assets/AItem4.png", "assets/AItem5.png"];
+const S_ITEMS = ["assets/SItem1.png", "assets/SItem1.png", "assets/SItem1.png", "assets/SItem1.png", "assets/SItem1.png"];
 
-const maxInventorySize = 4;
-const messages = document.getElementById('message');
-const shootAIButton = document.createElement('button');
-const shootSelfButton = document.createElement('button');
-const playerLivesSpan = document.getElementById('player-lives');
-const aiLivesSpan = document.getElementById('ai-lives');
-const playerInventorySpan = document.getElementById('player-inventory');
-const bonusList = document.getElementById('bonus-list');
+const menu = document.getElementById("menu");
+const gachaAnimation = document.getElementById("gacha-animation");
+const itemDisplay = document.querySelector(".item-display");
+const itemImage = document.getElementById("item-image");
+const gachaMusic = document.getElementById("gacha-music");
+const rollBtn = document.getElementById("roll-btn");
+const backBtn = document.getElementById("back-btn");
 
-// Бонусы
-const bonuses = [
-  "Добавить жизнь",
-  "Снять жизнь у ИИ",
-  "Пропустить ход ИИ",
-  "Увеличить инвентарь",
-];
+let counter = 0;
 
-// Настройка кнопок
-shootAIButton.textContent = "Выстрелить в ИИ";
-shootSelfButton.textContent = "Выстрелить в себя";
-shootAIButton.classList.add('action-button');
-shootSelfButton.classList.add('action-button');
-document.getElementById('duel-area').appendChild(shootAIButton);
-document.getElementById('duel-area').appendChild(shootSelfButton);
+rollBtn.addEventListener("click", startGacha);
+backBtn.addEventListener("click", backToMenu);
 
-// Обновление интерфейса
-function updateUI() {
-  playerLivesSpan.textContent = playerLives;
-  aiLivesSpan.textContent = aiLives;
-  playerInventorySpan.textContent = playerInventory.length;
+function startGacha() {
+  menu.classList.add("hidden");
+  gachaAnimation.classList.remove("hidden");
+
+  gsap.fromTo(".screen", { opacity: 0 }, { opacity: 1, duration: 7, onComplete: revealItem });
 }
 
-// Проверка окончания игры
-function checkGameOver() {
-  if (playerLives <= 0 || aiLives <= 0) {
-    messages.textContent = playerLives <= 0 ? "Вы проиграли!" : "Вы победили!";
-    shootAIButton.disabled = true;
-    shootSelfButton.disabled = true;
-    return true;
-  }
-  return false;
+function revealItem() {
+  itemDisplay.classList.remove("hidden");
+
+  const item = rollItem();
+  itemImage.src = item.img;
+  gachaMusic.src = item.audio;
+  gachaMusic.play();
 }
 
-// Получение бонуса
-function grantBonus() {
-  if (roundCount % 3 === 0 && roundCount > 0) {
-    const bonus = bonuses[Math.floor(Math.random() * bonuses.length)];
-    if (playerInventory.length < maxInventorySize) {
-      playerInventory.push(bonus);
-      const listItem = document.createElement('li');
-      listItem.textContent = bonus;
-      bonusList.appendChild(listItem);
-      messages.textContent = `Вы получили бонус: ${bonus}`;
-    } else {
-      messages.textContent = "Инвентарь полон! Используйте предмет.";
-    }
+function rollItem() {
+  counter++;
+  let random = Math.random() * 100;
+
+  if (counter % 90 === 0) {
+    return { img: randomItem(S_ITEMS), audio: "assets/gachaS.mp3" };
+  } else if (counter % 10 === 0 || random <= 1.2) {
+    return { img: randomItem(A_ITEMS), audio: "assets/gacha.mp3" };
+  } else if (random <= 98) {
+    return { img: randomItem(B_ITEMS), audio: "assets/gacha.mp3" };
   }
 }
 
-// Действие: выстрелить в ИИ
-function shootAtAI() {
-  if (checkGameOver()) return;
-
-  const bullet = Math.random() > 0.5;
-  roundCount++;
-
-  if (bullet) {
-    aiLives--;
-    messages.textContent = "Вы попали в ИИ!";
-  } else {
-    messages.textContent = "Патрон оказался пустым!";
-  }
-
-  grantBonus();
-  updateUI();
-  checkGameOver();
+function randomItem(array) {
+  return array[Math.floor(Math.random() * array.length)];
 }
 
-// Действие: выстрелить в себя
-function shootAtSelf() {
-  if (checkGameOver()) return;
-
-  const bullet = Math.random() > 0.5;
-  roundCount++;
-
-  if (bullet) {
-    playerLives--;
-    messages.textContent = "Выстрел оказался смертельным!";
-  } else {
-    messages.textContent = "Патрон пустой! Ваш ход продолжается.";
-    return; // Игрок продолжает ход, если патрон пустой
-  }
-
-  grantBonus();
-  updateUI();
-  checkGameOver();
+function backToMenu() {
+  itemDisplay.classList.add("hidden");
+  gachaAnimation.classList.add("hidden");
+  menu.classList.remove("hidden");
 }
-
-// Обработчики событий
-shootAIButton.addEventListener('click', shootAtAI);
-shootSelfButton.addEventListener('click', shootAtSelf);
-updateUI();
