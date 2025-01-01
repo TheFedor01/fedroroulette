@@ -1,81 +1,72 @@
-let aGuarantee = 10;
-let sGuarantee = 90;
-
-const bItems = ["assets/BItem1.png", "assets/BItem2.png", "assets/BItem3.png", "assets/BItem4.png", "assets/BItem5.png"];
-const aItems = ["assets/AItem1.png", "assets/AItem2.png", "assets/AItem3.png", "assets/AItem4.png", "assets/AItem5.png"];
-const sItems = ["assets/SItem1.png", "assets/SItem1.png", "assets/SItem1.png"];
-
-const menuMusic = document.getElementById('menuMusic');
-const rollOnceBtn = document.getElementById('rollOnce');
-const rollTenBtn = document.getElementById('rollTen');
-const backToMenuBtn = document.getElementById('backToMenu');
-
-const rollScreen = document.getElementById('rollScreen');
-const result = document.getElementById('result');
-const resultImage = document.getElementById('resultImage');
-
-const aGuaranteeSpan = document.getElementById('aGuarantee');
-const sGuaranteeSpan = document.getElementById('sGuarantee');
-
-function rollItem() {
-    let roll = Math.random() * 100;
-    if (sGuarantee === 1 || roll <= 0.2) {
-        sGuarantee = 90;
-        aGuarantee--;
-        return { rank: 'S', item: getRandom(sItems), music: "assets/gachaS.mp3" };
-    } else if (aGuarantee === 1 || roll <= 1.4) {
-        sGuarantee--;
-        aGuarantee = 10;
-        return { rank: 'A', item: getRandom(aItems), music: "assets/gacha.mp3" };
-    } else {
-        sGuarantee--;
-        aGuarantee--;
-        return { rank: 'B', item: getRandom(bItems), music: "assets/gacha.mp3" };
-    }
+/* Основные стили */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #fff;
+    text-align: center;
 }
 
-function getRandom(array) {
-    return array[Math.floor(Math.random() * array.length)];
+.hidden {
+    display: none;
 }
 
-function updateGuarantees() {
-    aGuaranteeSpan.textContent = aGuarantee;
-    sGuaranteeSpan.textContent = sGuarantee;
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-function showRollScreen(itemData) {
-    menuMusic.pause();
-    rollScreen.classList.remove('hidden');
-
-    setTimeout(() => {
-        resultImage.src = itemData.item;
-        result.classList.remove('hidden');
-        const audio = new Audio(itemData.music);
-        audio.play();
-    }, 7000);
+#menu {
+    padding: 20px;
 }
 
-function resetToMenu() {
-    result.classList.add('hidden');
-    rollScreen.classList.add('hidden');
-    menuMusic.play();
+#guaranteeStatus p {
+    font-size: 18px;
+    margin: 5px 0;
 }
 
-rollOnceBtn.addEventListener('click', () => {
-    const item = rollItem();
-    updateGuarantees();
-    showRollScreen(item);
-});
+/* Экран крутки */
+#rollScreen {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
-rollTenBtn.addEventListener('click', () => {
-    let items = [];
-    for (let i = 0; i < 10; i++) {
-        items.push(rollItem());
-    }
-    updateGuarantees();
-    showRollScreen(items[0]); // Показываем первый предмет из 10
-});
+#tvAnimation {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+}
 
-backToMenuBtn.addEventListener('click', resetToMenu);
+.tv {
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, #444, #000);
+    border-radius: 10px;
+    animation: flicker 7s infinite;
+}
 
-updateGuarantees();
+@keyframes flicker {
+    0%, 100% { background: radial-gradient(circle, #444, #000); }
+    50% { background: radial-gradient(circle, #666, #111); }
+}
+
+#result {
+    margin-top: 20px;
+}
+
+#result img {
+    width: 200px;
+    height: auto;
+    border: 2px solid #fff;
+    border-radius: 10px;
+}
