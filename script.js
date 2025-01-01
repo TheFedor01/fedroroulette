@@ -1,89 +1,88 @@
-// Гаранты и пул предметов
-let aGuarantee = 10;
-let sGuarantee = 90;
+const B_ITEMS = ["assets/BItem1.png", "assets/BItem2.png", "assets/BItem3.png", "assets/BItem4.png", "assets/BItem5.png"];
+const A_ITEMS = ["assets/AItem1.png", "assets/AItem2.png", "assets/AItem3.png", "assets/AItem4.png", "assets/AItem5.png"];
+const S_ITEMS = ["assets/SItem1.png", "assets/SItem1.png", "assets/SItem1.png", "assets/SItem1.png", "assets/SItem1.png"];
 
-const bItems = ["assets/BItem1.png", "assets/BItem2.png", "assets/BItem3.png", "assets/BItem4.png", "assets/BItem5.png"];
-const aItems = ["assets/AItem1.png", "assets/AItem2.png", "assets/AItem3.png", "assets/AItem4.png", "assets/AItem5.png"];
-const sItems = ["assets/SItem1.png", "assets/SItem1.png", "assets/SItem1.png"];
+const menu = document.getElementById("menu");
+const gachaAnimation = document.getElementById("gacha-animation");
+const itemDisplay = document.querySelector(".item-display");
+const itemImage = document.getElementById("item-image");
 
-// Элементы DOM
-const menuMusic = document.getElementById('menuMusic');
-const rollOnceBtn = document.getElementById('rollOnce');
-const rollTenBtn = document.getElementById('rollTen');
-const backToMenuBtn = document.getElementById('backToMenu');
+const menuMusic = document.getElementById("menu-music");
+const gachaMusic = document.getElementById("gacha-music");
+const rollBtn = document.getElementById("roll-btn");
+const roll10Btn = document.getElementById("roll-10-btn"); // Новая кнопка
+const backBtn = document.getElementById("back-btn");
+const rollsLeftDisplay = document.getElementById("rolls-left");
 
-const rollScreen = document.getElementById('rollScreen');
-const result = document.getElementById('result');
-const resultImage = document.getElementById('resultImage');
+let counter = 0; // Счётчик круток для гарантии
 
-const aGuaranteeSpan = document.getElementById('aGuarantee');
-const sGuaranteeSpan = document.getElementById('sGuarantee');
+// Привязываем события
+rollBtn.addEventListener("click", () => startGacha(1)); // Одна крутка
+roll10Btn.addEventListener("click", () => startGacha(10)); // 10 круток
+backBtn.addEventListener("click", backToMenu);
 
-// Генерация предмета
+function startGacha(spins) {
+  menu.classList.add("hidden");
+  gachaAnimation.classList.remove("hidden");
+
+  menuMusic.pause();
+  menuMusic.currentTime = 0;
+
+  // Для каждой крутки
+  for (let i = 0; i < spins; i++) {
+    const { img, audio } = rollItem(); // Рассчитываем редкость сразу
+
+    gachaMusic.src = audio; // Устанавливаем правильную музыку
+    gachaMusic.play();
+
+    // Запускаем анимацию экранов
+    const screens = document.querySelectorAll(".screen");
+    gsap.fromTo(
+      screens,
+      { opacity: 0 },
+      {
+        opacity: 1,
+        duration: 0.5,
+        stagger: 0.5,
+        repeat: 6,
+        onComplete: () => revealItem(img), // Показать результат
+      }
+    );
+  }
+
+  // Обновляем счётчик до гарантии
+  rollsLeftDisplay.textContent = 90 - (counter % 90);
+}
+
+function revealItem(img) {
+  itemDisplay.classList.remove("hidden");
+  itemImage.src = img;
+}
+
 function rollItem() {
-    let roll = Math.random() * 100;
-    if (sGuarantee === 1 || roll <= 0.2) {
-        sGuarantee = 90;
-        aGuarantee--;
-        return { rank: 'S', item: getRandom(sItems), music: "assets/gachaS.mp3" };
-    } else if (aGuarantee === 1 || roll <= 1.4) {
-        sGuarantee--;
-        aGuarantee = 10;
-        return { rank: 'A', item: getRandom(aItems), music: "assets/gacha.mp3" };
-    } else {
-        sGuarantee--;
-        aGuarantee--;
-        return { rank: 'B', item: getRandom(bItems), music: "assets/gacha.mp3" };
-    }
+  counter++;
+  let random = Math.random() * 100;
+
+  if (counter % 90 === 0) {
+    return { img: randomItem(S_ITEMS), audio: "assets/gachaS.mp3" };
+  } else if (counter % 10 === 0 || random <= 1.2) {
+    return { img: randomItem(A_ITEMS), audio: "assets/gacha.mp3" };
+  } else {
+    return { img: randomItem(B_ITEMS), audio: "assets/gacha.mp3" };
+  }
 }
 
-function getRandom(array) {
-    return array[Math.floor(Math.random() * array.length)];
+function randomItem(array) {
+  return array[Math.floor(Math.random() * array.length)];
 }
 
-// Обновление информации о гарантах
-function updateGuarantees() {
-    aGuaranteeSpan.textContent = aGuarantee;
-    sGuaranteeSpan.textContent = sGuarantee;
+function backToMenu() {
+  itemDisplay.classList.add("hidden");
+  gachaAnimation.classList.add("hidden");
+  menu.classList.remove("hidden");
+
+  gachaMusic.pause();
+  gachaMusic.currentTime = 0;
+
+  menuMusic.play();
 }
-
-// Показываем экран крутки
-function showRollScreen(itemData) {
-    menuMusic.pause();
-    rollScreen.classList.remove('hidden');
-
-    setTimeout(() => {
-        resultImage.src = itemData.item;
-        result.classList.remove('hidden');
-        const audio = new Audio(itemData.music);
-        audio.play();
-    }, 7000); // 7 секунд для анимации
-}
-
-// Возвращаемся в меню
-function resetToMenu() {
-    result.classList.add('hidden');
-    rollScreen.classList.add('hidden');
-    menuMusic.play();
-}
-
-// Обработчики событий
-rollOnceBtn.addEventListener('click', () => {
-    const item = rollItem();
-    updateGuarantees();
-    showRollScreen(item);
-});
-
-rollTenBtn.addEventListener('click', () => {
-    let items = [];
-    for (let i = 0; i < 10; i++) {
-        items.push(rollItem());
-    }
-    updateGuarantees();
-    showRollScreen(items[0]); // Показываем первый предмет
-});
-
-backToMenuBtn.addEventListener('click', resetToMenu);
-
-// Инициализация
-updateGuarantees();
