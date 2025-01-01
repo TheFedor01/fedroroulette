@@ -1,67 +1,63 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: black;
-  color: white;
-  text-align: center;
-  margin: 0;
-  overflow: hidden;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #000;
+    color: #fff;
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
 
 #menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100vh;
-  gap: 20px;
+    padding: 20px;
+}
+
+#guaranteeStatus p {
+    font-size: 18px;
 }
 
 button {
-  padding: 10px 20px;
-  font-size: 18px;
-  cursor: pointer;
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-#gachaScreen {
-  position: relative;
-  height: 100vh;
+#rollScreen {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: #111;
 }
 
-#animationScreen {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin: 20px;
-  opacity: 0;
-  animation: fade-in 7s forwards;
+#tvAnimation {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 80%;
 }
 
 .tv {
-  background: linear-gradient(45deg, #444, #000);
-  width: 100%;
-  aspect-ratio: 4/3;
-  border: 2px solid #888;
-  animation: flicker 7s infinite;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, #444, #000);
+    animation: flicker 7s infinite;
+    border-radius: 10px;
 }
 
 @keyframes flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+    0%, 100% { background: radial-gradient(circle, #444, #000); }
+    50% { background: radial-gradient(circle, #666, #111); }
 }
 
 #result {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #result img {
-  max-width: 300px;
+    width: 200px;
 }
