@@ -14,6 +14,7 @@ const roll10Btn = document.getElementById("roll-10-btn");
 const backBtn = document.getElementById("back-btn");
 
 let counter = 0; // Счётчик круток для гарантии
+let currentRolls = []; // Массив для сохранения результатов круток
 
 // Привязываем события
 rollBtn.addEventListener("click", startGacha);
@@ -77,21 +78,28 @@ function start10Rolls() {
       stagger: 0.5,
       repeat: 6, // Длительность ~3 секунд
       onComplete: () => {
+        currentRolls = [];
         for (let i = 0; i < 10; i++) {
-          rollItem();
+          currentRolls.push(rollItem());
         }
-        revealItem(); // Показать последний предмет после 10 круток
+        revealItems(); // Показать предметы после 10 круток
       },
     }
   );
 }
 
-function revealItem() {
+function revealItems() {
   itemDisplay.classList.remove("hidden");
 
-  // Получаем предмет
-  const { img } = rollItem();
-  itemImage.src = img;
+  // Отображаем все предметы
+  let delay = 0;
+  currentRolls.forEach((item, index) => {
+    setTimeout(() => {
+      itemImage.src = item.img;
+      itemDisplay.innerHTML += `<img src="${item.img}" class="item-image">`;
+    }, delay);
+    delay += 500; // Интервал для появления каждого предмета
+  });
 }
 
 function rollItem() {
