@@ -5,12 +5,12 @@ const S_ITEMS = ["assets/SItem1.png", "assets/SItem1.png", "assets/SItem1.png", 
 const menu = document.getElementById("menu");
 const gachaAnimation = document.getElementById("gacha-animation");
 const itemDisplay = document.querySelector(".item-display");
-const itemImage = document.getElementById("item-image");
+const itemsContainer = document.createElement('div'); // Контейнер для нескольких предметов
 
 const menuMusic = document.getElementById("menu-music");
 const gachaMusic = document.getElementById("gacha-music");
 const rollBtn = document.getElementById("roll-btn");
-const roll10Btn = document.getElementById("roll-10-btn"); // Новая кнопка
+const roll10Btn = document.getElementById("roll-10-btn");
 const backBtn = document.getElementById("back-btn");
 const rollsLeftDisplay = document.getElementById("rolls-left");
 
@@ -19,23 +19,47 @@ let counter = 0; // Счётчик круток для гарантии
 // Привязываем события
 rollBtn.addEventListener("click", () => startGacha(1)); // Одна крутка
 roll10Btn.addEventListener("click", () => startGacha(10)); // 10 круток
-backBtn.addEventListener("click", backToMenu);
 
-function startGacha(spins) {
+async function startGacha(spins) {
   menu.classList.add("hidden");
   gachaAnimation.classList.remove("hidden");
 
   menuMusic.pause();
   menuMusic.currentTime = 0;
 
-  // Для каждой крутки
+  // Очистим контейнер для предметов перед новыми крутками
+  itemsContainer.innerHTML = '';
+  itemsContainer.classList.add('items-container');
+  itemDisplay.appendChild(itemsContainer);
+
   for (let i = 0; i < spins; i++) {
     const { img, audio } = rollItem(); // Рассчитываем редкость сразу
 
-    gachaMusic.src = audio; // Устанавливаем правильную музыку
-    gachaMusic.play();
+    await playGachaMusic(audio); // Ждём, пока музыка сыграет перед следующей круткой
 
     // Запускаем анимацию экранов
+    await playScreenAnimation(); // Ждём окончания анимации экранов
+
+    revealItem(img); // Показать результат после завершения анимации
+  }
+
+  // Обновляем счётчик до гарантии
+  rollsLeftDisplay.textContent = 90 - (counter % 90);
+}
+
+// Асинхронная функция для воспроизведения музыки
+function playGachaMusic(audioSrc) {
+  return new Promise((resolve) => {
+    gachaMusic.src = audioSrc;
+    gachaMusic.play();
+
+    gachaMusic.onended = () => resolve(); // Разрешаем промис, когда музыка закончила играть
+  });
+}
+
+// Асинхронная функция для анимации экранов
+function playScreenAnimation() {
+  return new Promise((resolve) => {
     const screens = document.querySelectorAll(".screen");
     gsap.fromTo(
       screens,
@@ -44,19 +68,22 @@ function startGacha(spins) {
         opacity: 1,
         duration: 0.5,
         stagger: 0.5,
-        repeat: 6,
-        onComplete: () => revealItem(img), // Показать результат
+        repeat: 6, // Повторяем анимацию 6 раз
+        yoyo: true, // Возврат к исходному состоянию после каждого мигания
+        onComplete: resolve // Завершаем промис после завершения анимации
       }
     );
-  }
-
-  // Обновляем счётчик до гарантии
-  rollsLeftDisplay.textContent = 90 - (counter % 90);
+  });
 }
 
 function revealItem(img) {
   itemDisplay.classList.remove("hidden");
-  itemImage.src = img;
+
+  // Если несколько круток, добавляем новый элемент в контейнер
+  const newItem = document.createElement('img');
+  newItem.src = img;
+  newItem.classList.add('item-image');
+  itemsContainer.appendChild(newItem); // Добавляем картинку в контейнер
 }
 
 function rollItem() {
