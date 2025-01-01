@@ -1,37 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gacha Simulator</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gacha Simulator</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <audio id="menuMusic" src="Assets/menu.mp3" loop></audio>
-  <audio id="gachaSound" src="Assets/gacha.mp3"></audio>
-  <audio id="gachaSSound" src="Assets/gachaS.mp3"></audio>
-
-  <div id="menu">
-    <h1>Gacha Simulator</h1>
-    <button id="singlePull">Крутить 1 раз</button>
-    <button id="tenPulls">Крутить 10 раз</button>
-    <p>До гаранта A: <span id="aCounter">10</span></p>
-    <p>До гаранта S: <span id="sCounter">90</span></p>
-  </div>
-
-  <div id="gachaScreen" class="hidden">
-    <div id="animationScreen">
-      <div class="tv"></div>
-      <div class="tv"></div>
-      <div class="tv"></div>
-      <div class="tv"></div>
+    <div id="menu">
+        <h1>Gacha Simulator</h1>
+        <audio id="menuMusic" src="assets/menu.mp3" autoplay loop></audio>
+        <div id="guaranteeStatus">
+            <p>До A-гаранта: <span id="aGuarantee">10</span></p>
+            <p>До S-гаранта: <span id="sGuarantee">90</span></p>
+        </div>
+        <button id="rollOnce">Крутить 1 раз</button>
+        <button id="rollTen">Крутить 10 раз</button>
     </div>
-    <div id="result" class="hidden">
-      <img id="resultImage" src="" alt="Item">
-      <button id="backToMenu">Назад</button>
-    </div>
-  </div>
 
-  <script src="script.js"></script>
+    <div id="rollScreen" class="hidden">
+        <div id="tvAnimation">
+            <div class="tv"></div>
+            <div class="tv"></div>
+            <div class="tv"></div>
+        </div>
+        <div id="result" class="hidden">
+            <img id="resultImage" src="" alt="Result Item">
+            <button id="backToMenu">Назад</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
