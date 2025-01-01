@@ -68,9 +68,12 @@ rollOnceBtn.addEventListener('click', () => {
 });
 
 rollTenBtn.addEventListener('click', () => {
-    for (let i = 0; i < 10; i++) rollItem();
+    let items = [];
+    for (let i = 0; i < 10; i++) {
+        items.push(rollItem());
+    }
     updateGuarantees();
-    showRollScreen({ rank: 'Multiple', item: bItems[0], music: "assets/gacha.mp3" }); // Placeholder
+    showRollScreen(items[0]); // Показываем первый предмет из 10
 });
 
 backToMenuBtn.addEventListener('click', resetToMenu);
