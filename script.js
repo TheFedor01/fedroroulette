@@ -10,12 +10,14 @@ const itemImage = document.getElementById("item-image");
 const menuMusic = document.getElementById("menu-music");
 const gachaMusic = document.getElementById("gacha-music");
 const rollBtn = document.getElementById("roll-btn");
+const roll10Btn = document.getElementById("roll-10-btn");
 const backBtn = document.getElementById("back-btn");
 
 let counter = 0; // Счётчик круток для гарантии
 
 // Привязываем события
 rollBtn.addEventListener("click", startGacha);
+roll10Btn.addEventListener("click", start10Rolls);
 backBtn.addEventListener("click", backToMenu);
 
 function startGacha() {
@@ -45,6 +47,41 @@ function startGacha() {
       stagger: 0.5,
       repeat: 6, // Длительность ~3 секунд
       onComplete: revealItem,
+    }
+  );
+}
+
+function start10Rolls() {
+  // Скрыть меню
+  menu.classList.add("hidden");
+
+  // Показать гача-анимацию
+  gachaAnimation.classList.remove("hidden");
+
+  // Остановить музыку из меню
+  menuMusic.pause();
+  menuMusic.currentTime = 0;
+
+  // Получить музыку для гача
+  gachaMusic.src = "assets/gacha.mp3"; // Общая музыка для 10 круток
+  gachaMusic.play();
+
+  // Анимация экранов для 10 круток
+  const screens = document.querySelectorAll(".screen");
+  gsap.fromTo(
+    screens,
+    { opacity: 0 },
+    {
+      opacity: 1,
+      duration: 0.5,
+      stagger: 0.5,
+      repeat: 6, // Длительность ~3 секунд
+      onComplete: () => {
+        for (let i = 0; i < 10; i++) {
+          rollItem();
+        }
+        revealItem(); // Показать последний предмет после 10 круток
+      },
     }
   );
 }
